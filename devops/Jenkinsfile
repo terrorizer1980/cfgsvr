@@ -1,23 +1,21 @@
 // @Library('default') _
 
-properties {
-    office365ConnectorWebhooks {
-        webhooks {
-            webhook {
-                name('Toolchain')
-                url('https://outlook.office.com/webhook/2b80f405-da6f-4bc0-ad89-28cc2c93aee4@3048dc87-43f0-4100-9acb-ae1971c79395/JenkinsCI/e98b302061c84625bd714827463572fe/7ed12f4b-1876-485a-b89b-d128bd0a9122')
-                startNotification(true)
-                notifySuccess(true)
-                notifyAborted(false)
-                notifyNotBuilt(false)
-                notifyUnstable(true)
-                notifyFailure(true)
-                notifyBackToNormal(true)
-                notifyRepeatedFailure(false)
-                timeout(30000)
-            }
-        }
-    }
+
+options {
+    office365ConnectorWebhooks([[
+        name: 'ConfigServer',
+        url: 'https://outlook.office.com/webhook/2b80f405-da6f-4bc0-ad89-28cc2c93aee4@3048dc87-43f0-4100-9acb-ae1971c79395/JenkinsCI/e98b302061c84625bd714827463572fe/7ed12f4b-1876-485a-b89b-d128bd0a9122'
+        startNotification: true,
+        notifySuccess: true,
+        notifyAborted: false,
+        notifyNotBuilt: false,
+        notifyUnstable: true,
+        notifyFailure: true,
+        notifyBackToNormal: true,
+        notifyRepeatedFailure: false,
+        timeout: 30000
+        ]]
+    )
 }
 
 try {
