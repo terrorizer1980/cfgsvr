@@ -74,7 +74,16 @@ try {
                 }
                 
                 stage ('Publish') {
-                    echo 'Artifact uploaded to Nexus Repository Manager OSS'
+                    def pom = readMavenPom file: 'pom.xml'
+                    nexusPublisher nexusInstanceId: 'default', \
+                    nexusRepositoryId: 'maven-snapshots', \
+                    packages: [[$class: 'MavenPackage', \
+                    mavenAssetList: [[classifier: '', extension: '', filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"], \
+                                     [classifier: 'sources', extension: '', filePath: "target/${pom.artifactId}-${pom.version}-sources.${pom.packaging}"]], \
+                    mavenCoordinate: [artifactId: "${pom.artifactId}", \
+                    groupId: "${pom.groupId}", \
+                    packaging: "${pom.packaging}", \
+                    version: "${pom.version}-${env.BUILD_NUMBER}"]]]
                 }
             }
         }
