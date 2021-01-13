@@ -80,7 +80,8 @@
 			<url>https://repo.spring.io/milestone</url>
 		</repository>
 		<repository>
-			<id>maven-public</id>
+			<id>nexus</id>
+			<name>Nexus Repository Manager OSS</name>
 			<url>http://toolchain.eastus.cloudapp.azure.com/nexus/repository/maven-public/</url>
 		</repository>
 	</repositories>
