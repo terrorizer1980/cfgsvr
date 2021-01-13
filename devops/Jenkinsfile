@@ -1,0 +1,49 @@
+// @Library('default') _
+
+// setProperties.defaults token: '7FABBDCED3595AA4', branch: 'develop', url : 'https://outlook.office.com/webhook/2b80f405-da6f-4bc0-ad89-28cc2c93aee4@3048dc87-43f0-4100-9acb-ae1971c79395/JenkinsCI/e98b302061c84625bd714827463572fe/7ed12f4b-1876-485a-b89b-d128bd0a9122'
+
+try {
+    
+    // slack.info color: 'ffd700', msg: 'Started'
+
+    if (env.BRANCH_NAME == 'main') {
+        // setProperties.defaults token: '7FABBDCED3595AA4', branch: 'develop', url : 'https://outlook.office.com/webhook/2b80f405-da6f-4bc0-ad89-28cc2c93aee4@3048dc87-43f0-4100-9acb-ae1971c79395/JenkinsCI/e98b302061c84625bd714827463572fe/7ed12f4b-1876-485a-b89b-d128bd0a9122'
+
+        node('docker-agent') {
+            stage('Checkout') {
+                checkout scm
+            }
+
+            stage('Build') {
+                mvn compile
+            }
+
+            stage('Testing: Unit Testing') {
+                mvn install
+            }
+            
+            stage('Testing: Code Quality') {
+                withSonarQubeEnv() {
+                    mvn sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN
+                }
+                timeout(time: 5, unit: 'MINUTES') {
+                    qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
+                    }
+                }
+            }
+            
+            stage ('Publish') {
+                echo 'Artifact uploaded to Nexus Repository Manager OSS'
+            }
+        }
+    }
+    // slack.info color: '#4dbd33', msg: 'Ended Successfully'
+} catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException flowInterrupted) {
+    // slack.error 'Job execution was rejected'
+    throw flowInterrupted
+} catch (e) {
+    slack.error e.getMessage()
+    throw e
+}
