@@ -29,7 +29,9 @@ properties (
 try {
 
     if (env.BRANCH_NAME == 'main') {
-        sh '''apt-get update && apt-get install -y \
+        node('docker-agent') {
+            
+            sh '''apt-get update && apt-get install -y \
             apt-transport-https \
             ca-certificates \
             curl \
@@ -43,7 +45,7 @@ try {
             && apt-get update \
             && apt-get install -y docker-ce-cli \
             && rm -fr /var/lib/apt/lists/*'''
-        node('docker-agent') {
+
             docker.image('maven:3-jdk-11').inside() { 
                 stage('Checkout') {
                     checkout scm
