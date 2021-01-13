@@ -10,32 +10,35 @@ try {
         // setProperties.defaults token: '7FABBDCED3595AA4', branch: 'develop', url : 'https://outlook.office.com/webhook/2b80f405-da6f-4bc0-ad89-28cc2c93aee4@3048dc87-43f0-4100-9acb-ae1971c79395/JenkinsCI/e98b302061c84625bd714827463572fe/7ed12f4b-1876-485a-b89b-d128bd0a9122'
 
         node('docker-agent') {
-            stage('Checkout') {
-                checkout scm
-            }
-
-            stage('Build') {
-                sh 'mvn compile'
-            }
-
-            stage('Testing: Unit Testing') {
-                sh 'mvn install'
-            }
-            
-            stage('Testing: Code Quality') {
-                withSonarQubeEnv() {
-                    sh 'mvn sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN'
+            docker.image('maven:3-jdk-11') { 
+    
+                stage('Checkout') {
+                    checkout scm
                 }
-                timeout(time: 5, unit: 'MINUTES') {
-                    qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                        throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
+
+                stage('Build') {
+                    sh 'mvn compile'
+                }
+
+                stage('Testing: Unit Testing') {
+                    sh 'mvn install'
+                }
+                
+                stage('Testing: Code Quality') {
+                    withSonarQubeEnv() {
+                        sh 'mvn sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN'
+                    }
+                    timeout(time: 5, unit: 'MINUTES') {
+                        qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
+                        }
                     }
                 }
-            }
-            
-            stage ('Publish') {
-                echo 'Artifact uploaded to Nexus Repository Manager OSS'
+                
+                stage ('Publish') {
+                    echo 'Artifact uploaded to Nexus Repository Manager OSS'
+                }
             }
         }
     }
