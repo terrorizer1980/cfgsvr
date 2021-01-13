@@ -57,15 +57,14 @@ try {
                 }
 
                 stage('Build') {
-                    sh 'mvn compile'
+                    sh 'mvn install -DskipTests'
                 }
                 
-                stage('Testing: Code Quality') {
-                    sh 'mvn install'
+                stage('Test') {
                     withSonarQubeEnv() {
-                        sh 'mvn sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN'
+                        sh 'mvn sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.qualitygate=true'
                     }
-                    timeout(time: 5, unit: 'MINUTES') {
+                    timeout(time: 1, unit: 'MINUTES') {
                         qg = waitForQualityGate()
                         if (qg.status != 'OK') {
                             throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
