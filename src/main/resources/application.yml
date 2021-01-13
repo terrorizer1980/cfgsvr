@@ -1,0 +1,48 @@
+---
+info:
+  component: 'Config Server'
+
+# logging:
+#   level:
+#     root: DEBUG
+
+server:
+  port: 8443
+  ssl:
+    client-auth: need
+
+    enabled: true
+
+    key-store-type: PKCS12
+    key-store: classpath:ssl/server.p12
+    key-store-password: letmein
+    
+    trust-store: classpath:ssl/truststore.jks
+    trust-store-password: changeit
+
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enable: true
+      force: true
+  application:
+    name: cfgsvr
+  # autoconfigure:
+  #   exclude: ${spring.autoconfigure.sac}, ${spring.autoconfigure.mwsas}
+  #   sac: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+  #   mwsas: org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
+  cloud:
+    config:
+      server:
+        git:
+          pattern: '*/prd'
+          uri: git@github.com:eliezerchavez/cfgrepo-prd.git
+          cloneOnStart: true
+          repos:
+            pre:
+              pattern:
+              - '*/dev'
+              - '*/stg'
+              uri: git@github.com:eliezerchavez/cfgrepo-pre.git
+              cloneOnStart: true

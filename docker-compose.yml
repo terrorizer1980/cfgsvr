@@ -1,0 +1,14 @@
+---
+version: '3.1'
+services:
+  cfgsvr:
+    build:
+      args:
+        jarFile: 'cfgsvr-0.0.1-SNAPSHOT.jar'
+      context: '.'
+    container_name: 'cfgsvr'
+    image: 'tools/cfgsvr'
+    ports:
+      - 8443:8443
+    volumes:
+      - '~/.ssh:/root/.ssh'

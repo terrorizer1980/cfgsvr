@@ -1,0 +1,7 @@
+---
+encrypt:
+  keyStore:
+    location: classpath:ssl/server.p12
+    password: letmein
+    alias: configserver
+    type: PKCS12
