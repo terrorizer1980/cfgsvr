@@ -28,10 +28,6 @@ spring:
       force: true
   application:
     name: cfgsvr
-  # autoconfigure:
-  #   exclude: ${spring.autoconfigure.sac}, ${spring.autoconfigure.mwsas}
-  #   sac: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-  #   mwsas: org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
   cloud:
     config:
       server:
