@@ -15,16 +15,16 @@ try {
             }
 
             stage('Build') {
-                mvn compile
+                sh 'mvn compile'
             }
 
             stage('Testing: Unit Testing') {
-                mvn install
+                sh 'mvn install'
             }
             
             stage('Testing: Code Quality') {
                 withSonarQubeEnv() {
-                    mvn sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN
+                    sh 'mvn sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN'
                 }
                 timeout(time: 5, unit: 'MINUTES') {
                     qg = waitForQualityGate()
