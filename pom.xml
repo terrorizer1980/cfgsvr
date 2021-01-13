@@ -57,19 +57,19 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<executions>
-				  <execution>
-					<id>attach-sources</id>
-					<goals>
-					  <goal>jar</goal>
-					</goals>
-				  </execution>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
 				</executions>
-			  </plugin>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -79,6 +79,20 @@
 			<name>Spring Milestones</name>
 			<url>https://repo.spring.io/milestone</url>
 		</repository>
+		<repository>
+			<id>maven-public</id>
+			<url>http://toolchain.eastus.cloudapp.azure.com/nexus/repository/maven-public/</url>
+		</repository>
 	</repositories>
 
+	<distributionManagement>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>http://toolchain.eastus.cloudapp.azure.com/nexus/repository/maven-snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>nexus-releases</id>
+			<url>http://toolchain.eastus.cloudapp.azure.com/nexus/repository/maven-releases/</url>
+		</repository>
+	</distributionManagement>
 </project>
