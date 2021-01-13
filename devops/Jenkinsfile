@@ -20,6 +20,6 @@ try {
     // slack.error 'Job execution was rejected'
     throw flowInterrupted
 } catch (e) {
-    slack.error e.getMessage()
+    // slack.error e.getMessage()
     throw e
 }
