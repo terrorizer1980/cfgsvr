@@ -1,4 +1,4 @@
-# Configuration Repository
+# Configuration Server
 
 ## Overview 🔍
 
