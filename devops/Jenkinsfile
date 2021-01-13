@@ -57,13 +57,13 @@ try {
                 }
 
                 stage('Build') {
-                    sh 'mvn install -DskipTests'
+                    sh 'mvn -s .ci/settings.xml install -DskipTests'
                 }
                 
                 stage('Test') {
                     withSonarQubeEnv() {
-                        sh 'mvn install'
-                        sh 'mvn sonar:sonar'
+                        sh 'mvn -s .ci/settings.xml install'
+                        sh 'mvn -s .ci/settings.xml sonar:sonar'
                     }
                     timeout(time: 5, unit: 'MINUTES') {
                         qg = waitForQualityGate()
@@ -74,7 +74,7 @@ try {
                 }
                 
                 stage ('Publish') {
-                    sh 'mvn deploy'
+                    sh 'mvn -s .ci/settings.xml deploy'
                     // def pom = readMavenPom file: 'pom.xml'
                     // nexusPublisher nexusInstanceId: 'default', \
                     // nexusRepositoryId: 'maven-snapshots', \
