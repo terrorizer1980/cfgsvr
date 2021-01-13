@@ -9,6 +9,24 @@ properties (
             ),
         ),
     disableConcurrentBuilds(),
+    pipelineTriggers ([
+        GenericTrigger(
+            genericVariables: [
+                [key: 'repo', value: '$.repository.name'],
+                [key: 'branch', value: '$.push.changes[0].new.name'],
+                [key: 'user', value: '$.push.changes[0].new.target.author.user.display_name'],
+                [key: 'commit', value: '$.push.changes[0].new.target.links.html.href'],
+                [key: 'commit_message', value: '$.push.changes[0].commits[0].message']
+            ],
+            causeString: '$user pushed into $branch. More info: $commit',
+            token: '9F2DAD18F7FC8A79ACCA54A5DCC99',
+            printContributedVariables: true,
+            printPostContent: true,
+            silentResponse: false,
+            regexpFilterText: ' $branch $commit_message',
+            regexpFilterExpression: '(?=.* ' + genericTrigger.branch + ' )^(?!.*Jenkins commit set version).*'
+        )
+    ]),
     office365ConnectorWebhooks([[
         name: 'ConfigServer',
         url: 'https://outlook.office.com/webhook/2b80f405-da6f-4bc0-ad89-28cc2c93aee4@3048dc87-43f0-4100-9acb-ae1971c79395/JenkinsCI/e98b302061c84625bd714827463572fe/7ed12f4b-1876-485a-b89b-d128bd0a9122',
@@ -65,7 +83,7 @@ try {
                         sh 'mvn install'
                         sh 'mvn sonar:sonar'
                     }
-                    timeout(time: 1, unit: 'MINUTES') {
+                    timeout(time: 5, unit: 'MINUTES') {
                         qg = waitForQualityGate()
                         if (qg.status != 'OK') {
                             throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
