@@ -11,34 +11,7 @@ try {
 
         node('docker-agent') {
             docker.image('maven:3-jdk-11').inside() { 
-    
-                stage('Checkout') {
-                    checkout scm
-                }
-
-                stage('Build') {
-                    sh 'mvn compile'
-                }
-
-                stage('Testing: Unit Testing') {
-                    sh 'mvn install'
-                }
-                
-                stage('Testing: Code Quality') {
-                    withSonarQubeEnv() {
-                        sh 'mvn sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN'
-                    }
-                    timeout(time: 5, unit: 'MINUTES') {
-                        qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
-                        }
-                    }
-                }
-                
-                stage ('Publish') {
-                    echo 'Artifact uploaded to Nexus Repository Manager OSS'
-                }
+                sh 'mvn --version'
             }
         }
     }
