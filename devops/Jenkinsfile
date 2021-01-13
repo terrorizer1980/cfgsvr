@@ -46,7 +46,7 @@ try {
             && apt-get install -y docker-ce-cli \
             && rm -fr /var/lib/apt/lists/*'''
 
-            docker.image('maven:3-jdk-11').inside() { 
+            docker.image('maven:3-jdk-11').inside() {
                 withCredentials([sshUserPrivateKey(credentialsId: "git", keyFileVariable: 'keyfile')]) {
                     sh 'mkdir ~/.ssh && cp $keyfile ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa'
                     sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
@@ -62,7 +62,8 @@ try {
                 
                 stage('Test') {
                     withSonarQubeEnv() {
-                        sh 'mvn sonar:sonar -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.qualitygate=true'
+                        sh 'mvn install'
+                        sh 'mvn sonar:sonar'
                     }
                     timeout(time: 1, unit: 'MINUTES') {
                         qg = waitForQualityGate()
