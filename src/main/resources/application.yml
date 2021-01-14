@@ -31,7 +31,6 @@ spring:
     config:
       server:
         git:
-          pattern: '*/prd'
           uri: git@github.com:eliezerchavez/cfgrepo-prd.git
           cloneOnStart: true
           repos:
