@@ -22,7 +22,8 @@ properties (
         notifyRepeatedFailure: false,
         timeout: 30000
         ]]
-    )
+    ),
+    pipelineTriggers([githubPush()]),
     ]
 )
 
