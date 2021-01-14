@@ -3,11 +3,11 @@
 properties (
     [
     buildDiscarder (
-            logRotator (
-                numToKeepStr: '7',
-                artifactNumToKeepStr: '7'
-            ),
+        logRotator (
+            numToKeepStr: '7',
+            artifactNumToKeepStr: '7'
         ),
+    ),
     disableConcurrentBuilds(),
     office365ConnectorWebhooks([[
         name: 'ConfigServer',
