@@ -56,15 +56,15 @@ try {
                     checkout scm
                 }
 
-                configFileProvider([configFile(fileId: 'cfgsvr', variable: 'mvnSettings')]) {
+                configFileProvider([configFile(fileId: 'cfgsvr', variable: 'M2_SETTINGS')]) {
                     stage('Build') {
-                        sh 'mvn -s ${env.mvnSettings} install -DskipTests'
+                        sh 'mvn -s ${M2_SETTINGS} install -DskipTests'
                     }
                     
                     stage('Test') {
                         withSonarQubeEnv() {
-                            sh 'mvn -s ${env.mvnSettings} install'
-                            sh 'mvn -s ${env.mvnSettings} sonar:sonar'
+                            sh 'mvn -s ${M2_SETTINGS} install'
+                            sh 'mvn -s ${M2_SETTINGS} sonar:sonar'
                         }
                         timeout(time: 5, unit: 'MINUTES') {
                             qg = waitForQualityGate()
@@ -75,7 +75,7 @@ try {
                     }
                     
                     stage ('Publish') {
-                        sh 'mvn -s ${env.mvnSettings} deploy'
+                        sh 'mvn -s ${M2_SETTINGS} deploy'
                         // def pom = readMavenPom file: 'pom.xml'
                         // nexusPublisher nexusInstanceId: 'default', \
                         // nexusRepositoryId: 'maven-snapshots', \
