@@ -76,7 +76,7 @@ try {
                     }
                     
                     stage ('Publish') {
-                        sh 'mvn -s ${M2_SETTINGS} deploy'
+                        sh 'mvn -s ${M2_SETTINGS} deploy -DskipTests=true'
                         // def pom = readMavenPom file: 'pom.xml'
                         // nexusPublisher nexusInstanceId: 'default', \
                         // nexusRepositoryId: 'maven-snapshots', \
