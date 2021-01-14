@@ -56,35 +56,37 @@ try {
                     checkout scm
                 }
 
-                stage('Build') {
-                    sh 'mvn -s devops/.ci/settings.xml install -DskipTests'
-                }
-                
-                stage('Test') {
-                    withSonarQubeEnv() {
-                        sh 'mvn -s devops/.ci/settings.xml install'
-                        sh 'mvn -s devops/.ci/settings.xml sonar:sonar'
+                configFileProvider([configFile(fileId: 'cfgsvr', variable: 'mvnSettings')]) {
+                    stage('Build') {
+                        sh 'mvn -s ${env.mvnSettings} install -DskipTests'
                     }
-                    timeout(time: 5, unit: 'MINUTES') {
-                        qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
+                    
+                    stage('Test') {
+                        withSonarQubeEnv() {
+                            sh 'mvn -s ${env.mvnSettings} install'
+                            sh 'mvn -s ${env.mvnSettings} sonar:sonar'
+                        }
+                        timeout(time: 5, unit: 'MINUTES') {
+                            qg = waitForQualityGate()
+                            if (qg.status != 'OK') {
+                                throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
+                            }
                         }
                     }
-                }
-                
-                stage ('Publish') {
-                    sh 'mvn -s devops/.ci/settings.xml deploy'
-                    // def pom = readMavenPom file: 'pom.xml'
-                    // nexusPublisher nexusInstanceId: 'default', \
-                    // nexusRepositoryId: 'maven-snapshots', \
-                    // packages: [[$class: 'MavenPackage', \
-                    // mavenAssetList: [[classifier: '', extension: '', filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"], \
-                    //                  [classifier: 'sources', extension: '', filePath: "target/${pom.artifactId}-${pom.version}-sources.${pom.packaging}"]], \
-                    // mavenCoordinate: [artifactId: "${pom.artifactId}", \
-                    // groupId: "${pom.groupId}", \
-                    // packaging: "${pom.packaging}", \
-                    // version: "${pom.version}-${env.BUILD_NUMBER}"]]]
+                    
+                    stage ('Publish') {
+                        sh 'mvn -s ${env.mvnSettings} deploy'
+                        // def pom = readMavenPom file: 'pom.xml'
+                        // nexusPublisher nexusInstanceId: 'default', \
+                        // nexusRepositoryId: 'maven-snapshots', \
+                        // packages: [[$class: 'MavenPackage', \
+                        // mavenAssetList: [[classifier: '', extension: '', filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"], \
+                        //                  [classifier: 'sources', extension: '', filePath: "target/${pom.artifactId}-${pom.version}-sources.${pom.packaging}"]], \
+                        // mavenCoordinate: [artifactId: "${pom.artifactId}", \
+                        // groupId: "${pom.groupId}", \
+                        // packaging: "${pom.packaging}", \
+                        // version: "${pom.version}-${env.BUILD_NUMBER}"]]]
+                    }
                 }
             }
         }

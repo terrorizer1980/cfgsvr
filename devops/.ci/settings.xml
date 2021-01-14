@@ -2,7 +2,6 @@
 
   <mirrors>
     <mirror>
-      <!--This sends everything else to /public -->
       <id>nexus</id>
       <mirrorOf>*</mirrorOf>
       <url>http://toolchain.eastus.cloudapp.azure.com/nexus/repository/maven-public/</url>
