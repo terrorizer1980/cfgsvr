@@ -59,7 +59,7 @@ try {
 
                 configFileProvider([configFile(fileId: 'cfgsvr', variable: 'M2_SETTINGS')]) {
                     stage('Build') {
-                        sh 'mvn -s ${M2_SETTINGS} install -DskipTests'
+                        sh 'mvn -s ${M2_SETTINGS} compile'
                     }
                     
                     stage('Test') {
