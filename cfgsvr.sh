@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 cd ./src/main/resources/ssl
 
 echo -ne "> Cleaning old resources...             "
