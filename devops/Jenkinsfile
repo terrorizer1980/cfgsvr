@@ -47,14 +47,14 @@ try {
             && apt-get install -y docker-ce-cli \
             && rm -fr /var/lib/apt/lists/*'''
 
+            stage('Checkout') {
+                checkout scm
+            }
+
             docker.image('maven:3-jdk-11').inside() {
                 withCredentials([sshUserPrivateKey(credentialsId: "git", keyFileVariable: 'keyfile')]) {
                     sh 'mkdir ~/.ssh && cp $keyfile ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa'
                     sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
-                }
-
-                stage('Checkout') {
-                    checkout scm
                 }
 
                 configFileProvider([configFile(fileId: 'cfgsvr', variable: 'M2_SETTINGS')]) {
