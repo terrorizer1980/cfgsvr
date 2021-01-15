@@ -48,7 +48,8 @@ try {
             && rm -fr /var/lib/apt/lists/*'''
 
             def mvnSettings = 'devops/.ci/settings.xml'
-
+            echo '${mvnSettings}'
+            
             stage('Checkout') {
                 checkout scm
             }
