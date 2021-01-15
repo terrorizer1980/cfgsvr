@@ -48,7 +48,6 @@ try {
             && rm -fr /var/lib/apt/lists/*'''
 
             def mvnSettings = 'devops/.ci/settings.xml'
-            echo '$mvnSettings'
             
             stage('Checkout') {
                 checkout scm
@@ -61,13 +60,13 @@ try {
                 }
 
                 stage('Build') {
-                    sh 'mvn -s ${mvnSettings} compile'
+                    sh "mvn -s ${mvnSettings} compile"
                 }
                 
                 stage('Test') {
                     withSonarQubeEnv() {
-                        sh 'mvn -s ${mvnSettings} install'
-                        sh 'mvn -s ${mvnSettings} sonar:sonar'
+                        sh "mvn -s ${mvnSettings} install"
+                        sh "mvn -s ${mvnSettings} sonar:sonar"
                     }
                     timeout(time: 5, unit: 'MINUTES') {
                         qg = waitForQualityGate()
@@ -78,7 +77,7 @@ try {
                 }
                 
                 stage ('Publish') {
-                    sh 'mvn -s ${mvnSettings} deploy -DskipTests=true'
+                    sh "mvn -s ${mvnSettings} deploy -DskipTests=true"
                     // def pom = readMavenPom file: 'pom.xml'
                     // nexusPublisher nexusInstanceId: 'default', \
                     // nexusRepositoryId: 'maven-snapshots', \
