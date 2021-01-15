@@ -47,6 +47,8 @@ try {
             && apt-get install -y docker-ce-cli \
             && rm -fr /var/lib/apt/lists/*'''
 
+            def mvnSettings = 'devops/.ci/settings.xml'
+
             stage('Checkout') {
                 checkout scm
             }
@@ -57,37 +59,35 @@ try {
                     sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
                 }
 
-                configFileProvider([configFile(fileId: 'cfgsvr', variable: 'M2_SETTINGS')]) {
-                    stage('Build') {
-                        sh 'mvn -s ${M2_SETTINGS} compile'
+                stage('Build') {
+                    sh 'mvn -s ${mvnSettings} compile'
+                }
+                
+                stage('Test') {
+                    withSonarQubeEnv() {
+                        sh 'mvn -s ${mvnSettings} install'
+                        sh 'mvn -s ${mvnSettings} sonar:sonar'
                     }
-                    
-                    stage('Test') {
-                        withSonarQubeEnv() {
-                            sh 'mvn -s ${M2_SETTINGS} install'
-                            sh 'mvn -s ${M2_SETTINGS} sonar:sonar'
-                        }
-                        timeout(time: 5, unit: 'MINUTES') {
-                            qg = waitForQualityGate()
-                            if (qg.status != 'OK') {
-                                throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
-                            }
+                    timeout(time: 5, unit: 'MINUTES') {
+                        qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            throw new RuntimeException("Pipeline aborted due to quality gate coverage failure: ${qg.status}")
                         }
                     }
-                    
-                    stage ('Publish') {
-                        sh 'mvn -s ${M2_SETTINGS} deploy -DskipTests=true'
-                        // def pom = readMavenPom file: 'pom.xml'
-                        // nexusPublisher nexusInstanceId: 'default', \
-                        // nexusRepositoryId: 'maven-snapshots', \
-                        // packages: [[$class: 'MavenPackage', \
-                        // mavenAssetList: [[classifier: '', extension: '', filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"], \
-                        //                  [classifier: 'sources', extension: '', filePath: "target/${pom.artifactId}-${pom.version}-sources.${pom.packaging}"]], \
-                        // mavenCoordinate: [artifactId: "${pom.artifactId}", \
-                        // groupId: "${pom.groupId}", \
-                        // packaging: "${pom.packaging}", \
-                        // version: "${pom.version}-${env.BUILD_NUMBER}"]]]
-                    }
+                }
+                
+                stage ('Publish') {
+                    sh 'mvn -s ${mvnSettings} deploy -DskipTests=true'
+                    // def pom = readMavenPom file: 'pom.xml'
+                    // nexusPublisher nexusInstanceId: 'default', \
+                    // nexusRepositoryId: 'maven-snapshots', \
+                    // packages: [[$class: 'MavenPackage', \
+                    // mavenAssetList: [[classifier: '', extension: '', filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"], \
+                    //                  [classifier: 'sources', extension: '', filePath: "target/${pom.artifactId}-${pom.version}-sources.${pom.packaging}"]], \
+                    // mavenCoordinate: [artifactId: "${pom.artifactId}", \
+                    // groupId: "${pom.groupId}", \
+                    // packaging: "${pom.packaging}", \
+                    // version: "${pom.version}-${env.BUILD_NUMBER}"]]]
                 }
             }
         }
