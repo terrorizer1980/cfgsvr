@@ -1,5 +1,45 @@
 #!/usr/bin/env bash
 
+tries=1
+maxTries=3
+
+#
+# Name: warning
+# Date: 2021-01-14
+# displays warning message in standard output.
+#
+warning() {
+    echo ""
+    echo " Recreate SSL Keys & Certificates"
+    echo " ------------------------------------------------------------"
+    echo ""
+    echo " Press Ctrl-c to abort."
+    echo ""
+    echo -e " \e[5mWARNING:"
+    echo -e " \e[0mAll the keys and certificates will be destroyed!"
+    echo " Access to all cipher properties inside any configuration"
+    echo " repository will be lost unless a backup of the keys has"
+    echo " been created or you re-encrypt all your parameter values."
+    echo ""
+    echo " Are you sure that you want to recreate the Keys &"
+    echo " Certificates?"
+    echo ""
+}
+
+warning
+echo -ne " Type RECREATE to confirm: "
+read -r prompt
+while [ ${prompt} != 'RECREATE' -a ${tries} -lt ${maxTries} ]; do
+    tries=$((tries+1))
+    echo -e '\e[2A'
+    echo -ne " Type RECREATE to confirm: \e[K"
+    read -r prompt
+done
+
+if [ ${tries} -eq ${maxTries} ]; then
+    exit 1
+fi
+
 cd ./src/main/resources/ssl
 
 echo -ne "> Cleaning old resources...             "
