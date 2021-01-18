@@ -31,12 +31,14 @@ spring:
     config:
       server:
         git:
-          uri: git@github.com:eliezerchavez/cfgrepo-prd.git
+          # uri: git@github.com:eliezerchavez/cfgrepo-prd.git
+          uri: https://github.com/eliezerchavez/cfgrepo-prd.git
           cloneOnStart: true
           repos:
             pre:
               pattern:
               - '*/dev'
               - '*/stg'
-              uri: git@github.com:eliezerchavez/cfgrepo-pre.git
+              # uri: git@github.com:eliezerchavez/cfgrepo-pre.git
+              uri: https://github.com/eliezerchavez/cfgrepo-pre.git
               cloneOnStart: true
