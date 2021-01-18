@@ -59,7 +59,7 @@ class CfgSvrApplicationTests {
 		ResponseEntity<String> response = restTemplate.exchange("https://localhost:" + port + "/http/" + env,
 				HttpMethod.GET, null, String.class);
 
-		assertEquals(response.getStatusCode(), HttpStatus.OK);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 	}
 
@@ -70,14 +70,14 @@ class CfgSvrApplicationTests {
 		ResponseEntity<String> response = restTemplate.exchange("https://localhost:" + port + "/encrypt",
 				HttpMethod.POST, entity, String.class);
 
-		assertEquals(response.getStatusCode(), HttpStatus.OK);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNotNull(response.getBody());
 
 		HttpEntity<String> entityCipher = new HttpEntity<String>(response.getBody(), null);
 		ResponseEntity<String> responseCipher = restTemplate.exchange("https://localhost:" + port + "/decrypt",
 				HttpMethod.POST, entityCipher, String.class);
 
-		assertEquals(responseCipher.getStatusCode(), HttpStatus.OK);
+		assertEquals(HttpStatus.OK, responseCipher.getStatusCode());
 		assertEquals(input, responseCipher.getBody());
 	}
 
