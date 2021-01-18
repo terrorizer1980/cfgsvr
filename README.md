@@ -13,8 +13,12 @@ Configuration must be stored externally from the application and read-in as need
 
 * [Maven](https://maven.apache.org/users/index.html) <br />
   Apache Maven is a software project management and comprehension tool. Based on the concept of a project object model (POM), Maven can manage a project's build, reporting and documentation from a central piece of information.
-* [JUnit](https://junit.org/junit5/) <br />
-  The JUnit Platform serves as a foundation for launching testing frameworks on the JVM. It also defines the TestEngine API for developing a testing framework that runs on the platform. Furthermore, the platform provides a Console Launcher to launch the platform from the command line and a JUnit 4 based Runner for running any TestEngine on the platform in a JUnit 4 based environment.
+* [Spring Boot](https://spring.io/projects/spring-boot) <br />
+  Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run".
+* [Spring Cloud](https://spring.io/projects/spring-cloud) <br />
+  Spring Cloud provides tools for developers to quickly build some of the common patterns in distributed systems (e.g. configuration management, service discovery, circuit breakers, intelligent routing, micro-proxy, control bus, one-time tokens, global locks, leadership election, distributed sessions, cluster state).
+* [JUnit 5](https://junit.org/junit5/) <br />
+  The JUnit Platform serves as a foundation for launching testing frameworks on the JVM. It also defines the TestEngine API for developing a testing framework that runs on the platform. JUnit 5 is the next generation of JUnit. The goal is to create an up-to-date foundation for developer-side testing on the JVM. This includes focusing on Java 8 and above, as well as enabling many different styles of testing.
 * [Docker](https://www.docker.com/get-started) <br />
   A set of Platform as a Service (PaaS) products that use OS-level virtualization to deliver software in packages called containers. Containers are isolated from one another and bundle their own software, libraries and configuration files; they can communicate with each other through well-defined channels.
 * [Docker Compose](https://docs.docker.com/compose/) <br />
@@ -28,12 +32,24 @@ mvn clean install
 
 ### Run
 
-If already don't have a ssh key:
 ```bash
-ssh-keygen -b 4096 -C 'you@example.com' -f ~/.ssh/id_rsa -m PEM -N '' -q -t rsa
+mvn spring-boot:run
 ```
-Add the key to GitHub https://github.com/settings/keys.
-
+or
 ```bash
 docker-compose up --build -d
 ```
+
+### Related Projects
+* The following are the configuration repositories used in this project:
+  * [Production](https://github.com/eliezerchavez/cfgrepo-prd) Environment
+  * [Pre-Production](https://github.com/eliezerchavez/cfgrepo-pre) Environments
+
+  **IMPORTANT** <br />
+  If you're gonna use ssh URIs as source for the config repositories, please execute the following:
+  ```bash
+  ssh-keygen -b 4096 -C 'you@example.com' -f ~/.ssh/id_rsa -m PEM -N '' -q -t rsa
+  ```
+  and add the generated public key to [GitHub](https://github.com/settings/keys).
+
+* You can automate the build, test and publishing of this project using the [CI/CD Toolchain](https://github.com/eliezerchavez/cicd-toolchain)
