@@ -54,11 +54,7 @@ try {
             }
 
             docker.image('maven:3-jdk-11').inside() {
-                withCredentials([sshUserPrivateKey(credentialsId: "git", keyFileVariable: 'keyfile')]) {
-                    sh 'mkdir ~/.ssh && cp $keyfile ~/.ssh/id_rsa && chmod 400 ~/.ssh/id_rsa'
-                    sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
-                }
-
+                
                 stage('Build') {
                     sh "mvn -s ${mvnSettings} compile"
                 }
@@ -78,16 +74,6 @@ try {
                 
                 stage ('Publish') {
                     sh "mvn -s ${mvnSettings} deploy -DskipTests=true"
-                    // def pom = readMavenPom file: 'pom.xml'
-                    // nexusPublisher nexusInstanceId: 'default', \
-                    // nexusRepositoryId: 'maven-snapshots', \
-                    // packages: [[$class: 'MavenPackage', \
-                    // mavenAssetList: [[classifier: '', extension: '', filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"], \
-                    //                  [classifier: 'sources', extension: '', filePath: "target/${pom.artifactId}-${pom.version}-sources.${pom.packaging}"]], \
-                    // mavenCoordinate: [artifactId: "${pom.artifactId}", \
-                    // groupId: "${pom.groupId}", \
-                    // packaging: "${pom.packaging}", \
-                    // version: "${pom.version}-${env.BUILD_NUMBER}"]]]
                 }
             }
         }
