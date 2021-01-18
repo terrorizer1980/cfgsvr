@@ -40,7 +40,7 @@ or
 docker-compose up --build -d
 ```
 
-### Related Projects
+## Related Projects
 * The following are the configuration repositories used in this project:
   * [Production](https://github.com/eliezerchavez/cfgrepo-prd) Environment
   * [Pre-Production](https://github.com/eliezerchavez/cfgrepo-pre) Environments
