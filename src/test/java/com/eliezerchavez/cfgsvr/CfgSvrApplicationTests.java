@@ -7,6 +7,7 @@ import java.security.KeyStore;
 
 import javax.net.ssl.SSLContext;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -51,6 +52,12 @@ class CfgSvrApplicationTests {
 
 		this.restTemplate = new RestTemplateBuilder()
 				.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(client)).build();
+	}
+
+	// Test class added ONLY to cover main() invocation not covered by application tests.
+	@Test
+	void main() {
+		CfgSvrApplication.main(new String[] {});
 	}
 
 	@ParameterizedTest
